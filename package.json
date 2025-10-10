@@ -1,0 +1,20 @@
+{
+  "name": "devconnect-be",
+  "version": "1.0.0",
+  "description": "Connecting developers in India.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node src/app.js",
+    "dev": "nodemon src/app.js"
+  },
+  "keywords": [
+    "backend",
+    "nodejs",
+    "mongo"
+  ],
+  "author": "Akhil B George",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}
