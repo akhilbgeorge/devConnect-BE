@@ -1,37 +1,33 @@
 const express = require("express");
+
 const app = express();
 
-app.get("/abc", (req, res) => {
-  res.send({ firstName: "Akhil", lastName: "B George" });
-});
-// app.get(/^\/ab?c$/, (req, res) => {
-//   res.send({ firstName: "Akhil", lastName: "B George" });
-// });
-// app.get(/^\/ab+c$/, (req, res) => {
-//   res.send({ firstName: "Akhil", lastName: "B George" });
-// });
-// app.get(/^\/ab*cd$/, (req, res) => {
-//   res.send({ firstName: "Akhil", lastName: "B George" });
-// });
-// app.get(/^\/a(bc)?d$/, (req, res) => {
-//   res.send({ firstName: "Akhil", lastName: "B George" });
-// });
-// app.get(/^\/a(bc)+d$/, (req, res) => {
-//   res.send({ firstName: "Akhil", lastName: "B George" });
-// });
-
-// query params (/user?userId:123)
-// app.get("/user", (req, res) => {
-//   console.log(req.query)
-//   res.send({ firstName: "Akhil", lastName: "B George" });
-// });
-
-// dynamic routes (/user/123)
-// app.get("/user/:userId", (req, res) => {
-//   console.log(req.params)
-//   res.send({ firstName: "Akhil", lastName: "B George" });
-// });
+app.use(
+  "/user",
+  (req, res, next) => {
+    console.log("hi user 1");
+    next();
+  },
+  (req, res, next) => {
+    console.log("hi user 2");
+    next();
+  },
+  (req, res) => {
+    console.log("hi user 3");
+    res.send("response 3");
+  },
+  [
+    (req, res) => {
+      console.log("hi user 4");
+      res.send("response 4");
+    },
+    (req, res) => {
+      console.log("hi user 5");
+      res.send("response 5");
+    },
+  ]
+);
 
 app.listen(3000, () => {
-  console.log("Server is successfully listening on port 3000");
+  "Server is successfully listening on port 3000";
 });
