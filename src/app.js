@@ -3,18 +3,20 @@ const { adminAuth, userAuth } = require("./middlewares/auth");
 
 const app = express();
 
-app.use("/admin", adminAuth);
-
-app.post("/user/login", (req, res) => {
-  res.send("user login");
+app.get("/user",userAuth,(req, res) => {
+  try {
+    let user = true;
+    if (!user) throw new Error();
+    res.send("user found");
+  } catch (err) {
+    res.status(500).send("user not found");
+  }
 });
 
-app.get("/admin/data", (req, res) => {
-  res.send("admin data");
-});
-
-app.get("/user/data", userAuth, (req, res) => {
-  res.send("user data");
+app.use("/", (err, req, res, next) => {
+  if (err) {
+    res.status(500).send("something went wrong. Please contact support");
+  }
 });
 
 app.listen(3000, () => {
