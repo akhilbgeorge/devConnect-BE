@@ -1,24 +1,31 @@
 const express = require("express");
-const { adminAuth, userAuth } = require("./middlewares/auth");
-
+const connectDB = require("./config/database");
 const app = express();
+const User = require("./models/user");
 
-app.get("/user",userAuth,(req, res) => {
+app.post("/signup", async (req, res) => {
+  const user = new User({
+    firstName: "Rohit",
+    lastName: "Sharma",
+    emailId: "rohit45@gmail.com",
+    password: "ro4545",
+  });
+
   try {
-    let user = true;
-    if (!user) throw new Error();
-    res.send("user found");
+    await user.save();
+    res.send("User added successfully!");
   } catch (err) {
-    res.status(500).send("user not found");
+    res.status(400).send("Error saving the user: " + err.message);
   }
 });
 
-app.use("/", (err, req, res, next) => {
-  if (err) {
-    res.status(500).send("something went wrong. Please contact support");
-  }
-});
-
-app.listen(3000, () => {
-  console.log("server is running on port 3000");
-});
+connectDB()
+  .then(() => {
+    console.log("db connection established");
+    app.listen(3000, () => {
+      console.log("server is running on port 3000");
+    });
+  })
+  .catch((err) => {
+    console.error("db connection not established");
+  });
