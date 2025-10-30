@@ -7,7 +7,19 @@ app.use(express.json());
 
 app.post("/signup", async (req, res) => {
   const user = new User(req.body);
+  const data = req.body;
   try {
+
+    const ALLOWED_DATA = ["emailId", "password", "firstName", "lastName"];
+    const isAllowedData = Object.keys(data).every((k) =>
+      ALLOWED_DATA.includes(k)
+    );
+    if (!isAllowedData) {
+      throw new Error("update not allowed");
+    }
+    if (data?.skills?.length > 10) {
+      throw new Error("skills cannot be more than 10");
+    }
     await user.save();
     res.send("User added successfully!");
   } catch (err) {
@@ -43,10 +55,20 @@ app.delete("/user", async (req, res) => {
   }
 });
 
-app.patch("/user", async (req, res) => {
-  const userId = req.body.userId;
+app.patch("/user/:id", async (req, res) => {
+  const userId = req.params?.id;
   const data = req.body;
   try {
+    const ALLOWED_UPDATES = ["password", "photoUrl", "skills", "gender"];
+    const isAllowedUpdates = Object.keys(data).every((k) =>
+      ALLOWED_UPDATES.includes(k)
+    );
+    if (!isAllowedUpdates) {
+      throw new Error("update not allowed");
+    }
+    if (data?.skills?.length > 10) {
+      throw new Error("skills cannot be more than 10");
+    }
     const updatedUser = await User.findByIdAndUpdate(userId, data, {
       runValidators: true,
     });
