@@ -2,24 +2,22 @@ const express = require("express");
 const connectDB = require("./config/database");
 const app = express();
 const User = require("./models/user");
+const { validateSignUpData } = require("./utils/validate");
+const bcrypt = require("bcrypt");
 
 app.use(express.json());
 
 app.post("/signup", async (req, res) => {
-  const user = new User(req.body);
-  const data = req.body;
   try {
-
-    const ALLOWED_DATA = ["emailId", "password", "firstName", "lastName"];
-    const isAllowedData = Object.keys(data).every((k) =>
-      ALLOWED_DATA.includes(k)
-    );
-    if (!isAllowedData) {
-      throw new Error("update not allowed");
-    }
-    if (data?.skills?.length > 10) {
-      throw new Error("skills cannot be more than 10");
-    }
+    validateSignUpData(req);
+    const { firstName, lastName, emailId, password } = req.body;
+    const passwordHash = await bcrypt.hash(password, 10);
+    const user = new User({
+      firstName,
+      lastName,
+      emailId,
+      password: passwordHash,
+    });
     await user.save();
     res.send("User added successfully!");
   } catch (err) {
